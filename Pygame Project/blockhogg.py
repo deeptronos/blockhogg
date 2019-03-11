@@ -14,16 +14,37 @@ class Game():
 		self.screen = pyg.display.set_mode((self.screenWidth, self.screenHeight))
 		#Sets variable used to determine if user wants to quit
 		self.done = False
+		self.gameRunning = True
+
+		self.debugMode = True
 
 	def gravity(self):
 		pass
+
 	def run_game(self):
-		#Loop to make sure that window will stay open unless user wants to quit
+		#Put all logic inside this loop, above pyg.display.flip()
 		while not self.done:
 			for event in pyg.event.get():
 				if event.type == pyg.QUIT:
 					self.done = True
-		pyg.display.flip()
 
+				if self.debugMode:
+					self.debugg()
+
+			pyg.display.flip()
+
+		
+		
+				
+	
+	def drawStage(self):
+		pass
+
+	def debugg(self):
+		self.debugColor = (255,0,239)
+		for vy in range(14):
+			for vx in range(24):
+				pyg.draw.rect(self.screen, self.debugColor, pyg.Rect((vx * self.tileWidth),(vy * self.tileHeight),((vx * self.tileWidth) + self.tileWidth),((vy * self.tileHeight) + self.tileHeight)),1 )		
+		
 
 Game().run_game()
