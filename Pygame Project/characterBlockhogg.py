@@ -3,7 +3,7 @@ import pygame as pyg
 class Character():
 	def __init__(self, color, screen, screenWith, screenHeight, playernum):
 		#getting info from the display
-		infoObject = pygame.display.Info()
+		infoObject = pyg.display.Info()
         width, height = infoObject.current_w, infoObject.current_h
 		#determing starting position
 		if playernum == 1:
