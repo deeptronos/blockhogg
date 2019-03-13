@@ -17,8 +17,9 @@ class Game():
 		self.gameRunning = True
 
 		self.debugMode = True
-		
-		self.character = char.Character()
+
+		#currently working with stage 1
+		self.stage = stageData(1)
 
 	def gravity(self):
 		pass
@@ -33,11 +34,14 @@ class Game():
 				if self.debugMode:
 					self.debug()
 
-				self.chracter.draw(1)
 			pyg.display.flip()
 	
 	def drawStage(self):
-		pass
+		for row in range(len(self.stage.returnStageVar())):
+			for col in range(len(self.stage.returnStageVar()[0])):
+
+				print("row: " + str(row) + ", col: "+ str(col))
+				print(self.stage.returnStageData(row, col))	
 
 	def debug(self):
 		self.debugColor = (255,0,239)
@@ -46,8 +50,34 @@ class Game():
 				pyg.draw.rect(self.screen, self.debugColor, pyg.Rect((vx * self.tileWidth),(vy * self.tileHeight),((vx * self.tileWidth) + self.tileWidth),((vy * self.tileHeight) + self.tileHeight)),1 )      
 		
 
-#class stageData():
+class stageData():
 	def __init__(self, selectedStage):
-		
+		self.selectedStage = selectedStage
+
+		#initialize stageData with 1 as the selectedStage parameter to use this stage:
+		self.stage1 =  [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+						[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
+
+
+	def returnStageData(self, yPosInStageList, xPosInStageList):
+		if self.selectedStage == 1:
+			return self.stage1[yPosInStageList][xPosInStageList]
+
+	def returnStageVar(self):
+		if self.selectedStage == 1:
+			return self.stage1
 
 Game().run_game()
+Game().drawStage()
