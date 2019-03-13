@@ -16,10 +16,11 @@ class Game():
 		self.done = False
 		self.gameRunning = True
 
-		self.debugMode = True
+		self.debugMode = False
 
 		#currently working with stage 1
 		self.stage = stageData(1)
+		self.collidableBlockColor = (255,255,255)
 
 	def gravity(self):
 		pass
@@ -33,7 +34,7 @@ class Game():
 
 				if self.debugMode:
 					self.debug()
-
+				self.drawStage()
 			pyg.display.flip()
 	
 	def drawStage(self):
@@ -41,7 +42,12 @@ class Game():
 			for col in range(len(self.stage.returnStageVar()[0])):
 
 				print("row: " + str(row) + ", col: "+ str(col))
-				print(self.stage.returnStageData(row, col))	
+				print(self.stage.returnStageData(row, col))
+				if self.stage.returnStageData(row,col) == 0:
+					pass
+				if self.stage.returnStageData(row,col) == 1:
+					pyg.draw.rect(self.screen, self.collidableBlockColor, pyg.Rect((col * self.tileWidth), (row * self.tileHeight),((col * self.tileWidth) + self.tileWidth), ((row * self.tileHeight) + self.tileHeight)), 1)	
+					print("hit")
 
 	def debug(self):
 		self.debugColor = (255,0,239)
@@ -80,4 +86,4 @@ class stageData():
 			return self.stage1
 
 Game().run_game()
-Game().drawStage()
+#Game().drawStage()
