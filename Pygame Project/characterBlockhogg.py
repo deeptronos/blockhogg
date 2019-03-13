@@ -6,12 +6,15 @@ class Character():
 		infoObject = pyg.display.Info()
 		width, height = infoObject.current_w, infoObject.current_h
 		#determing starting position
+		self.direction = "l"
 		if playernum == 1:
 			self.x = screenWidth/3
 			self.y = screenHeight/2
+			self.direction = "r"
 		if playernum == 2:
 			self.x = screenWidth*2/3
 			self.y = screenHeight/2
+			self.direction = "l"
 		#defining variables based off of screen size. This should be done with tile size aswell.
 		self.screen = screen
 		self.wHeight = height
@@ -37,6 +40,8 @@ class Character():
 	def jump(self): #COME BACK AND MAKE SURE YOU MAKE A VARIABLE ONGROUND 
 		if chaRect.colliderect() == True:
 			self.movey += self.jumpHeight #adding vertical momentum to the character
+	def attack(self,direction):
+		pass
 	def update(self):
 		self.chaRect.x = self.chaRect.x + self.movex
 		self.chaRect.y = self.cahRect.y + self.movey
@@ -48,8 +53,10 @@ class Character():
 				if event.type == pygame.KEYDOWN:
 					if event.key == ord('a'):
 						chaRect.control(-speed,0)
+						self.direction = "l"
 					if event.key == ord('d'):
 						chaRect.control(speed,0)
+						self.direction = "r"
 					if event.key == ord('w'):
 						jump(self)
 
@@ -65,8 +72,10 @@ class Character():
 				if event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_LEFT:
 						chaRect.control(-speed,0)
+						self.direction = "l"
 					if event.key == pygame.K_RIGHT:
 						chaRect.control(speed,0)
+						self.direction = "r"
 					if event.key == pygame.K_UP:
 						jump(self)
 
