@@ -16,7 +16,7 @@ class Game():
 		self.done = False
 		self.gameRunning = True
 
-		self.debugMode = False
+		self.debugMode = True
 
 		#currently working with stage 1
 		self.stage = stageData(1)
@@ -46,14 +46,14 @@ class Game():
 				if self.stage.returnStageData(row,col) == 0:
 					pass
 				if self.stage.returnStageData(row,col) == 1:
-					pyg.draw.rect(self.screen, self.collidableBlockColor, pyg.Rect((col * self.tileWidth), (row * self.tileHeight),((col * self.tileWidth) + self.tileWidth), ((row * self.tileHeight) + self.tileHeight)), 1)	
-					print("hit")
+					pyg.draw.rect(self.screen, self.collidableBlockColor, pyg.Rect((col * self.tileWidth), (row * self.tileHeight),self.tileWidth, self.tileHeight), )
+					#print("hit")
 
 	def debug(self):
 		self.debugColor = (255,0,239)
 		for vy in range(14):
 			for vx in range(24):
-				pyg.draw.rect(self.screen, self.debugColor, pyg.Rect((vx * self.tileWidth),(vy * self.tileHeight),((vx * self.tileWidth) + self.tileWidth),((vy * self.tileHeight) + self.tileHeight)),1 )      
+				pyg.draw.rect(self.screen, self.debugColor, pyg.Rect((vx * self.tileWidth),(vy * self.tileHeight),(self.tileWidth),( self.tileHeight)),1 )      
 		
 
 class stageData():
