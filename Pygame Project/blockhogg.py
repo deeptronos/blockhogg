@@ -20,7 +20,6 @@ class Game():
 
 		self.debugMode = True
 
-		#currently working with stage 1
 		#self.stage = stageData(1)
 		self.stage = randomStageData()
 		self.collidableBlockColor = (255,255,255)
@@ -44,10 +43,10 @@ class Game():
 				if self.debugMode:
 					self.debug()
 				
-				if randomlyGeneratedStageDataExists == False:
+				if self.randomlyGeneratedStageDataExists == False:
 					self.generateStageData()
-				elif randomlyGeneratedStageDataExists == True:
-					drawStage
+				elif self.randomlyGeneratedStageDataExists == True:
+					self.drawStage()
 				
 			pyg.display.flip()
 	
@@ -65,25 +64,38 @@ class Game():
 					#print("hit")
 
 	def drawStage(self):
-
+		for row in range(len(self.randomlyGeneratedStageData)):
+			for col in range(len(self.randomlyGeneratedStageData[0])):
+				if self.randomlyGeneratedStageData[row][col] == 0:
+					pass
+					#print("miss")
+				elif self.randomlyGeneratedStageData[row][col] == 1 or self.randomlyGeneratedStageData[row][col] == 2:
+					pyg.draw.rect(self.screen, self.collidableBlockColor, pyg.Rect((col * self.tileWidth), (row * self.tileHeight), self.tileWidth, self.tileHeight))
+					#print("hit")
 
 	def generateStageData(self):
-		#A counter so that the stage generates after 100 ticks, if the randomlyGeneratedStageData variable is empty.
-		if self.randomlyGeneratedStageData == []:
-			if self.counter <= 100:
-				self.counter += 1
-			elif self.counter > 100:
-				self.counter = 0
-			if self.counter == 100:
 				#Randomly generates stage data to a size determined by the original stage data variable from the randomStageData class and by the randomlyGeneratedStageLength variable
+				counter = 0
 				for row in range(len(self.stage.randomStageData)):
 					tempRow = []
 					for col in range(self.randomlyGeneratedStageLength):
-						tempRow.append(self.stage.returnStageData("individual", random.randint(0,9), row))
+						if counter < 3:
+							tempRow.append(self.stage.returnStageData("individual", 10, row))
+							counter = counter + 1
+							#print("miss")
+						elif counter == 3:
+							#print("hit")
+							#Randomly choose a vertical slice from the stage data to append onto the game stage. A certain value is added to the retrieved variable length, because when a value is generated that's above the retrieved variable length, it's changed to select the last value of the list. Thus, the odds of retrieving the last value of the list are increased.
+							vertSlice = random.randint(0, (len(self.stage.randomStageData[0])))
+
+							tempRow.append(self.stage.returnStageData("individual", vertSlice, row))
+
+							counter = 0
+
 					self.randomlyGeneratedStageData.append(tempRow)
-				print(self.randomlyGeneratedStageData)
+					print(tempRow)
 				#Make it visible that the stage data has been generated
-				randomlyGeneratedStageDataExists = True
+				self.randomlyGeneratedStageDataExists = True
 
 	def debug(self):
 		self.debugColor = (255,0,239)
@@ -124,11 +136,11 @@ class stageData():
 #new stage data returning method:
 class randomStageData():
 	def __init__(self):				
-		self.randomStageData =		[[1,1,1,1,1,1,1,1,1,1],
-									 [1,0,1,0,1,2,0,0,1,0],
-									 [0,0,0,1,1,0,0,2,2,0],
-									 [0,1,1,1,0,0,2,1,0,0],
-									 [1,1,1,1,1,1,1,1,1,1]]
+		self.randomStageData =		[[1,1,1,1,1,1,1,1,1,1,1],
+									 [1,0,1,0,0,1,2,0,0,1,0],
+									 [0,0,0,1,1,1,0,0,2,2,0],
+									 [0,1,1,0,1,0,0,2,1,0,0],
+									 [1,1,1,1,1,1,1,1,1,1,1]]
 	
 	def returnStageData(self, returnMode, xPosition, yPosition):
 		if returnMode == "individual":
