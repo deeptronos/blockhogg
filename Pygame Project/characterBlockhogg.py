@@ -1,4 +1,5 @@
 import pygame as pyg
+#Can't import class attributes directly in the "import" statement, you have to do it elsewhere (see https://stackoverflow.com/questions/9155079/import-a-class-variable-from-another-module)
 from blockhogg import Game.screen
 
 class Laser():

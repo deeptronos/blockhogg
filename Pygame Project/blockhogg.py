@@ -30,6 +30,9 @@ class Game():
 		#Change to player movement speed once that's done
 		self.scrollSpeed = 10
 
+	def gravity(self):
+		pass
+
 	def run_game(self):
 		#Put all logic inside this loop, above pyg.display.flip()
 		while not self.done:
