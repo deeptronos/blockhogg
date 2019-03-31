@@ -29,6 +29,7 @@ class Game():
 		self.randomlyGeneratedStageDataExists = False
 		#Change to player movement speed once that's done
 		self.scrollSpeed = 10
+		self.black = (100,0,0)
 
 	def gravity(self):
 		pass
@@ -39,6 +40,7 @@ class Game():
 			for event in pyg.event.get():
 				if event.type == pyg.QUIT:
 					self.done = True
+				self.screen.fill((self.black))
 
 				if self.debugMode:
 					self.debug()
@@ -64,6 +66,7 @@ class Game():
 					#print("hit")
 
 	def drawStage(self):
+		#print("drawing stage:", self.randomlyGeneratedStageData)
 		for row in range(len(self.randomlyGeneratedStageData)):
 			for col in range(len(self.randomlyGeneratedStageData[0])):
 				if self.randomlyGeneratedStageData[row][col] == 0:
@@ -76,26 +79,44 @@ class Game():
 	def generateStageData(self):
 				#Randomly generates stage data to a size determined by the original stage data variable from the randomStageData class and by the randomlyGeneratedStageLength variable
 				counter = 0
+				self.randomlyGeneratedStageData = []
 				for row in range(len(self.stage.randomStageData)):
 					tempRow = []
 					for col in range(self.randomlyGeneratedStageLength):
 						if counter < 3:
 							tempRow.append(self.stage.returnStageData("individual", row, 10))
 							counter = counter + 1
-							#print("miss")
 						elif counter == 3:
-							#print("hit")
 							#Randomly choose a vertical slice from the stage data to append onto the game stage. A certain value is added to the retrieved variable length, because when a value is generated that's above the retrieved variable length, it's changed to select the last value of the list. Thus, the odds of retrieving the last value of the list are increased.
-							vertSlice = random.randint(0, (len(self.stage.randomStageData[0])))
-							print("running tempRow.append(self.stage.returnStageData('individual', ", row, ", ", vertSlice, "))")
+							vertSlice = random.randint(0, (len(self.stage.randomStageData[0]) - 1))
+						#	print("running tempRow.append(self.stage.returnStageData('individual', ", row, ", ", vertSlice, "))")
 							tempRow.append(self.stage.returnStageData("individual", row, vertSlice))
-
 							counter = 0
 
 					self.randomlyGeneratedStageData.append(tempRow)
 					print(tempRow)
-				#Make it visible that the stage data has been generated
-				self.randomlyGeneratedStageDataExists = True
+
+				#Loop to make sure that there arent any "walls" (vertical columns of anything other than 0)	
+				#Works by moving column by column, not row by row as the generation loop does, since we're looking for vertical columns in this case.
+				for col in range(len(self.randomlyGeneratedStageData[0])):
+					#blockCounter is added to each time anything that isnt a 0 is detected in a column. Each column should have at least two, a top and bottom, with potentially more if there are obsticles.
+					blockCounter = 0
+					for row in range(len(self.randomlyGeneratedStageData)):	
+
+						if (self.randomlyGeneratedStageData[row][col] == 1) or (self.randomlyGeneratedStageData[row][col] == 2):
+							blockCounter +=1 
+
+					#If blockCounter detects that there is a full vertical column which has only blocks (represented by anything other than 0), it will re-generate the data and reset all variables that could have potentially changed
+					if blockCounter == len(self.randomlyGeneratedStageData):
+						print("wall generated, re-running self.generateStageData()")
+						self.randomlyGeneratedStageDataExists = False
+						self.errorCatcher = True
+						self.generateStageData()
+
+					else:
+						self.randomlyGeneratedStageDataExists = True	
+
+			
 
 	def debug(self):
 		self.debugColor = (255,0,239)
