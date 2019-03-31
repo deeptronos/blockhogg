@@ -1,5 +1,5 @@
 import pygame as pyg
-import characterBlockhogg as char
+#import characterBlockhogg as char
 import random
 
 class Game():
@@ -56,10 +56,10 @@ class Game():
 			for col in range(len(self.stage.returnStageVar()[0])):
 
 				print("row: " + str(row) + ", col: "+ str(col))
-				print(self.stage.returnStageData(row, col))
-				if self.stage.returnStageData(row,col) == 0:
+				print(self.stage.returnStageData(col, row))
+				if self.stage.returnStageData(col,row) == 0:
 					pass
-				if self.stage.returnStageData(row,col) == 1:
+				if self.stage.returnStageData(col,row) == 1:
 					pyg.draw.rect(self.screen, self.collidableBlockColor, pyg.Rect((col * self.tileWidth), (row * self.tileHeight),self.tileWidth, self.tileHeight), )
 					#print("hit")
 
@@ -80,15 +80,15 @@ class Game():
 					tempRow = []
 					for col in range(self.randomlyGeneratedStageLength):
 						if counter < 3:
-							tempRow.append(self.stage.returnStageData("individual", 10, row))
+							tempRow.append(self.stage.returnStageData("individual", row, 10))
 							counter = counter + 1
 							#print("miss")
 						elif counter == 3:
 							#print("hit")
 							#Randomly choose a vertical slice from the stage data to append onto the game stage. A certain value is added to the retrieved variable length, because when a value is generated that's above the retrieved variable length, it's changed to select the last value of the list. Thus, the odds of retrieving the last value of the list are increased.
 							vertSlice = random.randint(0, (len(self.stage.randomStageData[0])))
-
-							tempRow.append(self.stage.returnStageData("individual", vertSlice, row))
+							print("running tempRow.append(self.stage.returnStageData('individual', ", row, ", ", vertSlice, "))")
+							tempRow.append(self.stage.returnStageData("individual", row, vertSlice))
 
 							counter = 0
 
@@ -142,7 +142,7 @@ class randomStageData():
 									 [0,1,1,0,1,0,0,2,1,0,0],
 									 [1,1,1,1,1,1,1,1,1,1,1]]
 	
-	def returnStageData(self, returnMode, xPosition, yPosition):
+	def returnStageData(self, returnMode, yPosition, xPosition):
 		if returnMode == "individual":
 			return self.randomStageData[yPosition][xPosition]
 
