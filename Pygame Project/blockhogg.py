@@ -12,13 +12,14 @@ class Game():
 		#Makes window size in relation to tile size
 		self.screenWidth, self.screenHeight = self.tileWidth * 24, self.tileHeight * 14
 		self.clock = pyg.time.Clock()
+		self.tickSpeed = 30
 		self.screen = pyg.display.set_mode((self.screenWidth, self.screenHeight))
 		self.counter = 0
 		#Sets variable used to determine if user wants to quit
 		self.done = False
 		self.gameRunning = True
 
-		self.debugMode = True
+		self.debugMode = False
 
 		#self.stage = stageData(1)
 		self.stage = randomStageData()
@@ -29,29 +30,34 @@ class Game():
 		self.randomlyGeneratedStageDataExists = False
 		#Change to player movement speed once that's done
 		self.scrollSpeed = 10
-		self.black = (100,0,0)
+		self.black = (0,0,0)
+		self.red = (255,0,0)
 
-	def gravity(self):
-		pass
+		self.player1 = char.Character(self.red, self.screen, self.screenWidth, self.screenHeight,self.tileWidth, self.tileHeight, 1)
 
 	def run_game(self):
 		#Put all logic inside this loop, above pyg.display.flip()
+	#	pyg.key.set_repeat(1, 25)
+	#	pyg.key.set_repeat()
 		while not self.done:
+			self.clock.tick(self.tickSpeed)
 			for event in pyg.event.get():
 				if event.type == pyg.QUIT:
 					self.done = True
-				self.screen.fill((self.black))
+			self.screen.fill((self.black))
 
-				if self.debugMode:
-					self.debug()
+			if self.debugMode:
+				self.debug()
 				
-				if self.randomlyGeneratedStageDataExists == False:
-					self.generateStageData()
-				elif self.randomlyGeneratedStageDataExists == True:
-					self.drawStage()
-				
-			pyg.display.flip()
-	
+			if self.randomlyGeneratedStageDataExists == False:
+				self.generateStageData()
+			elif self.randomlyGeneratedStageDataExists == True:
+				self.drawStage()
+				self.player1.update()
+				self.player1.draw()
+
+				pyg.display.update()
+		
 	#Old stage drawing method - outdated
 	def drawStageOld(self):
 		for row in range(len(self.stage.returnStageVar())):
@@ -115,9 +121,7 @@ class Game():
 
 					else:
 						self.randomlyGeneratedStageDataExists = True	
-
-			
-
+		
 	def debug(self):
 		self.debugColor = (255,0,239)
 		for vy in range(14):
@@ -174,6 +178,7 @@ class randomStageData():
 				else: 
 					columnData = [self.randomStageData[i][xPosition]]
 			return columnData
+
 
 Game().run_game()
 #Game().drawStage()
