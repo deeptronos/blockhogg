@@ -1,5 +1,5 @@
 import pygame as pyg
-#import characterBlockhogg as char
+import characterBlockhogg as char
 import random
 
 class Game():
