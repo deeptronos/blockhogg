@@ -1,4 +1,19 @@
 import pygame as pyg
+from blockhogg import Game.screen
+
+class Laser():
+    def __init__(self):
+        super().__init__()
+        self.x = characterBlockhogg.x
+        self.y = characterBlockhogg.y
+        self.laser = pygame.Surface([4,12])
+        self.laser.fill(RED)
+        self.rect = self.laser.get_rect()
+    def fire(self,laserpos):
+        self.rect.x += 10
+    def update(self):
+        if colliderect(self.laser) == True:
+            self.laser.kill()
 
 class Character():
 	def __init__(self, color, screen, screenWith, screenHeight, playernum):
@@ -6,15 +21,8 @@ class Character():
 		infoObject = pyg.display.Info()
 		width, height = infoObject.current_w, infoObject.current_h
 		#determing starting position
-		self.direction = "l"
-		if playernum == 1:
-			self.x = screenWidth/3
-			self.y = screenHeight/2
-			self.direction = "r"
-		if playernum == 2:
-			self.x = screenWidth*2/3
-			self.y = screenHeight/2
-			self.direction = "l"
+		self.x = screenWidth/3
+		self.y = screenHeight/2
 		#defining variables based off of screen size. This should be done with tile size aswell.
 		self.screen = screen
 		self.wHeight = height
@@ -24,24 +32,29 @@ class Character():
 		#making the character object
 		self.chaRect = pygame.Rect(self.x, self.y, self.wHeight, self.wWidth)
 		self.speed = 5
-		self.jumpHeight
 		self.color = colors
 		self.hp = 100
 	def draw(self, playernum):
-		if playernum == 1:
-			self.chaRect = pyg.draw.rect(self.screen, (255,0,0))
-		if playernum == 2:
-			self.chaRect = pyg.draw.rect(self.screen, (0,0,255))
+		self.chaRect = pyg.draw.rect(self.screen, (255,0,0))
 	#movement momentum system
 	def control(self, x, y):
 		if self.hp > 0:
-			self.movex += x
-			self.movey += y
-	def jump(self): #COME BACK AND MAKE SURE YOU MAKE A VARIABLE ONGROUND 
-		if chaRect.colliderect() == True:
-			self.movey += self.jumpHeight #adding vertical momentum to the character
-	def attack(self,direction):
-		pass
+			if chaRect.right < self.screenWidth:
+				if chaRect.left > 0:
+					self.movex += x
+					self.movey += y
+				else:
+					self.movex = 0
+					self.movey = 0
+
+	laser_list = pygame.sprite.Group()
+	def attack(self):
+		laserpos = chaRect.center()
+		laser = Laser()
+		laser.rect.x = self.x
+		laser.rect.y = self.y
+		laser_list.add(laser)
+		
 	def update(self):
 		self.chaRect.x = self.chaRect.x + self.movex
 		self.chaRect.y = self.cahRect.y + self.movey
@@ -53,36 +66,23 @@ class Character():
 				if event.type == pygame.KEYDOWN:
 					if event.key == ord('a'):
 						chaRect.control(-speed,0)
-						self.direction = "l"
 					if event.key == ord('d'):
 						chaRect.control(speed,0)
-						self.direction = "r"
 					if event.key == ord('w'):
-						jump(self)
+						chaRect.control(0, -speed)
+					if event.key == ord('s'):
+						chaRect.control(0, speed)
+					if event.key == ord('j'):
+						attack()
 
 				if event.type == pygame.KEYUP:
 					if event.key == ord('a'):
 						player.control(speed,0)
 					if event.key == ord('d'):
 						player.control(-speed,0)
-					if event.key == ord('q'):
-						pygame.quit()
-
-			if self.playernum == 2:
-				if event.type == pygame.KEYDOWN:
-					if event.key == pygame.K_LEFT:
-						chaRect.control(-speed,0)
-						self.direction = "l"
-					if event.key == pygame.K_RIGHT:
-						chaRect.control(speed,0)
-						self.direction = "r"
-					if event.key == pygame.K_UP:
-						jump(self)
-
-				if event.type == pygame.KEYUP:
-					if event.key == pygame.K_LEFT:
-						player.control(speed,0)
-					if event.key == pygame.K_RIGHT:
-						player.control(-speed,0)
+					if event.key == ord('w'):
+						chaRect.control(0, speed)
+					if event.key == ord('s'):
+						chaRect.control(0, -speed)
 					if event.key == ord('q'):
 						pygame.quit()
