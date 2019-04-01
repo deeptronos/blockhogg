@@ -24,7 +24,7 @@ class Character():
 		width, height = infoObject.current_w, infoObject.current_h
 		#determing starting position
 		#self.x = screenWidth/3
-		self.x = 0
+		self.x = 20
 		self.y = screenHeight/2
 		#defining variables based off of screen size. This should be done with tile size aswell.
 		self.screen = screen
@@ -39,7 +39,7 @@ class Character():
 		self.chaRect = pyg.Rect(self.x, self.y, self.playerWidth, self.playerHeight)
 		self.speed = 5
 		self.color = color
-		self.hp = 100
+		self.hp = 3
 		self.playerNum = playernum
 	def draw(self):
 		#self.chaRect = pyg.draw.rect(self.screen, self.color, self.char)
