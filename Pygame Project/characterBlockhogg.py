@@ -24,7 +24,7 @@ class Character():
 		width, height = infoObject.current_w, infoObject.current_h
 		#determing starting position
 		#self.x = screenWidth/3
-		self.x = 0
+		self.x = 25
 		self.y = screenHeight/2
 		#defining variables based off of screen size. This should be done with tile size aswell.
 		self.screen = screen

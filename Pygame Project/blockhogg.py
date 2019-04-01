@@ -50,6 +50,7 @@ class Game():
 	#	pyg.key.set_repeat(1, 25)
 	#	pyg.key.set_repeat()
 		while not self.done:
+			self.scrollSpeed += 0.1
 			self.bgX -= self.scrollSpeed
 			self.bgX2 -= self.scrollSpeed 
 			if self.bgX < self.blockSurface.get_width() * -1:
@@ -58,6 +59,7 @@ class Game():
 				self.bgX2 = self.blockSurface.get_width()
 
 			self.clock.tick(self.tickSpeed)
+
 			for event in pyg.event.get():
 				if event.type == pyg.QUIT:
 					self.done = True
@@ -68,12 +70,12 @@ class Game():
 				
 			if self.randomlyGeneratedStageDataExists == False:
 				self.generateStageData()
-			elif self.randomlyGeneratedStageDataExists == True:
-				#self.detectCollision()
+			elif self.randomlyGeneratedStageDataExists == True:	
 
 				self.drawStage(self.bgX, 0)
 				self.player1.update()
 				self.player1.draw()
+				self.detectCollision()
 
 				pyg.display.update()
 		
@@ -112,9 +114,6 @@ class Game():
 
 			self.screen.blit(self.blockSurface, (self.bgX, 0))
 			self.screen.blit(self.blockSurface, (self.bgX2, 0))
-
-					#print("hit")
-					#pyg.
 
 	def generateStageData(self):
 				#Randomly generates stage data to a size determined by the original stage data variable from the randomStageData class and by the randomlyGeneratedStageLength variable
@@ -161,7 +160,11 @@ class Game():
 			for vx in range(24):
 				pyg.draw.rect(self.screen, self.debugColor, pyg.Rect((vx * self.tileWidth),(vy * self.tileHeight),(self.tileWidth),( self.tileHeight)),1 )  
 
-	#def detectCollision(self):
+	def detectCollision(self):
+		tL, tR, bL, bR = (int(self.player1.x) - 1, int(self.player1.y) -1),((int(self.player1.x) + int(self.player1.playerWidth)) +1, int(self.player1.y) -1),(int(self.player1.x) - 1, int(self.player1.playerHeight) + int(self.player1.y) + 1 ), ((int(self.player1.playerWidth) + int(self.player1.x)) + 1, (int(self.player1.playerHeight) + int(self.player1.y)) + 1)
+		
+		if self.screen.get_at(tL) == (255,255,255,255) or self.screen.get_at(tR) == (255,255,255,255) or self.screen.get_at(bL) == (255,255,255,255) or self.screen.get_at(bR) == (255,255,255,255):
+			print("hittt!!")
 
 
 	def goCrazy(self):
