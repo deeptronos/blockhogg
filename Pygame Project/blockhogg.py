@@ -23,7 +23,7 @@ class Game():
 		self.stage = randomStageData()
 		self.collidableBlockColor = (255,255,255)
 		#Set to whatever size ya want. Looks best if it's at least screenWidth/tileWidth (24, in this case) but it still works if it's less.
-		self.randomlyGeneratedStageLength = 24
+		self.randomlyGeneratedStageLength = 240
 		self.randomlyGeneratedStageData = []
 		self.randomlyGeneratedStageDataExists = False
 	
@@ -50,7 +50,7 @@ class Game():
 	#	pyg.key.set_repeat(1, 25)
 	#	pyg.key.set_repeat()
 		while not self.done:
-			self.scrollSpeed += 0.1
+			self.scrollSpeed += 0.001
 			self.bgX -= self.scrollSpeed
 			self.bgX2 -= self.scrollSpeed 
 			if self.bgX < self.blockSurface.get_width() * -1:
@@ -102,7 +102,7 @@ class Game():
 						#print("miss")
 					elif self.randomlyGeneratedStageData[row][col] == 1 or self.randomlyGeneratedStageData[row][col] == 2:
 						
-						pyg.draw.rect(self.blockSurface, self.collidableBlockColor, pyg.Rect((col * self.tileWidth), (row * self.tileHeight), self.tileWidth, self.tileHeight))
+						pyg.draw.rect(self.blockSurface, self.goCrazy(), pyg.Rect((col * self.tileWidth), (row * self.tileHeight), self.tileWidth, self.tileHeight))
 						self.bgX2 = self.blockSurface.get_width()
 						self.screen.blit(self.blockSurface, (x,y))
 
@@ -163,12 +163,13 @@ class Game():
 	def detectCollision(self):
 		tL, tR, bL, bR = (int(self.player1.x) - 1, int(self.player1.y) -1),((int(self.player1.x) + int(self.player1.playerWidth)) +1, int(self.player1.y) -1),(int(self.player1.x) - 1, int(self.player1.playerHeight) + int(self.player1.y) + 1 ), ((int(self.player1.playerWidth) + int(self.player1.x)) + 1, (int(self.player1.playerHeight) + int(self.player1.y)) + 1)
 		
-		if self.screen.get_at(tL) == (255,255,255,255) or self.screen.get_at(tR) == (255,255,255,255) or self.screen.get_at(bL) == (255,255,255,255) or self.screen.get_at(bR) == (255,255,255,255):
+		if self.screen.get_at(tL) != (0,0,0,255) or self.screen.get_at(tR) != (0,0,0,255) or self.screen.get_at(bL) != (0,0,0,255) or self.screen.get_at(bR) != (0,0,0,255):
 			print("hittt!!")
 
 
 	def goCrazy(self):
 		return (random.randrange(255), random.randrange(255),random.randrange(255))
+		#return(255,255,255)
 
 		
 #old stage data returning function - do not use:
