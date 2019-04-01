@@ -21,8 +21,8 @@ class Game():
 		#self.stage = stageData(1)
 		self.stage = randomStageData()
 		self.collidableBlockColor = (255,255,255)
-		#Set to whatever size ya want
-		self.randomlyGeneratedStageLength = 240
+		#Set to whatever size ya want. Looks best if it's at least screenWidth/tileWidth (24, in this case) but it still works if it's less.
+		self.randomlyGeneratedStageLength = 24
 		self.randomlyGeneratedStageData = []
 		self.randomlyGeneratedStageDataExists = False
 	
@@ -36,7 +36,7 @@ class Game():
 		self.clock = pyg.time.Clock()
 		self.tickSpeed = 30
 		self.screen = pyg.display.set_mode((self.screenWidth, self.screenHeight))
-		#Surface we're drawing the blocks to, so we can blit that onto the main screen to move it
+		#Surface we're drawing the blocks to, so we can blit it onto the main screen to move it
 		self.blockSurface = pyg.Surface((self.tileWidth * self.randomlyGeneratedStageLength, self.screenHeight))
 		self.blockSurfaceBlitted = False
 		self.counter = 0
@@ -50,7 +50,7 @@ class Game():
 	#	pyg.key.set_repeat()
 		while not self.done:
 			self.bgX -= self.scrollSpeed
-			self.bgX2 -= self.scrollSpeed
+			self.bgX2 -= self.scrollSpeed 
 			if self.bgX < self.blockSurface.get_width() * -1:
 				self.bgX = self.blockSurface.get_width()
 			if self.bgX2 < self.blockSurface.get_width() * -1:
@@ -68,6 +68,8 @@ class Game():
 			if self.randomlyGeneratedStageDataExists == False:
 				self.generateStageData()
 			elif self.randomlyGeneratedStageDataExists == True:
+				#self.detectCollision()
+
 				self.drawStage(self.bgX, 0)
 				self.player1.update()
 				self.player1.draw()
@@ -103,8 +105,13 @@ class Game():
 
 			self.blockSurfaceBlitted = True
 		else:
+			#Draws screen-width rects on the top 5th and bottom 5th of the screen to close visible gaps between the two blits ;) because i don't know whats makin em do that
+			pyg.draw.rect(self.screen, self.collidableBlockColor, pyg.Rect(0, 0, self.screenWidth, self.screenHeight/5))
+			pyg.draw.rect(self.screen, self.collidableBlockColor, pyg.Rect(0, self.screenHeight - (self.screenHeight/5), self.screenWidth, self.screenHeight))
+
 			self.screen.blit(self.blockSurface, (self.bgX, 0))
 			self.screen.blit(self.blockSurface, (self.bgX2, 0))
+
 					#print("hit")
 					#pyg.
 
@@ -152,6 +159,9 @@ class Game():
 		for vy in range(14):
 			for vx in range(24):
 				pyg.draw.rect(self.screen, self.debugColor, pyg.Rect((vx * self.tileWidth),(vy * self.tileHeight),(self.tileWidth),( self.tileHeight)),1 )  
+
+	#def detectCollision(self):
+
 
 	def goCrazy(self):
 		return (random.randrange(255), random.randrange(255),random.randrange(255))
