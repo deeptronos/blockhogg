@@ -36,7 +36,7 @@ class Game():
 
 		self.clock = pyg.time.Clock()
 		self.tickSpeed = 30
-		self.screen = pyg.display.set_mode((self.screenWidth, self.screenHeight), (pyg.FULLSCREEN))
+		self.screen = pyg.display.set_mode((self.screenWidth, self.screenHeight))
 		#Surface we're drawing the blocks to, so we can blit it onto the main screen to move it
 		self.blockSurface = pyg.Surface((self.tileWidth * self.randomlyGeneratedStageLength, self.screenHeight))
 		self.blockSurfaceBlitted = False
