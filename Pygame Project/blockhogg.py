@@ -12,13 +12,6 @@ class Game():
 		#Makes window size in relation to tile size
 		self.screenWidth, self.screenHeight = self.tileWidth * 24, self.tileHeight * 5
 
-		self.clock = pyg.time.Clock()
-		self.tickSpeed = 30
-		self.screen = pyg.display.set_mode((self.screenWidth, self.screenHeight))
-		#Surface we're drawing the blocks to, so we can blit that onto the main screen to move it
-		self.blockSurface = pyg.Surface((self.screenWidth, self.screenHeight))
-		self.blockSurfaceBlit = False
-		self.counter = 0
 		#Sets variable used to determine if user wants to quit
 		self.done = False
 		self.gameRunning = True
@@ -28,25 +21,41 @@ class Game():
 		#self.stage = stageData(1)
 		self.stage = randomStageData()
 		self.collidableBlockColor = (255,255,255)
-
-		self.randomlyGeneratedStageLength = 24
+		#Set to whatever size ya want
+		self.randomlyGeneratedStageLength = 240
 		self.randomlyGeneratedStageData = []
 		self.randomlyGeneratedStageDataExists = False
 	
-		self.scrollSpeed = 10
+		self.scrollSpeed = 5
 		self.bgX = 0
+		self.bgX2 = 0
 
 		self.black = (0,0,0)
 		self.red = (255,0,0)
 
-		self.player1 = char.Character(self.red, self.screen, self.screenWidth, self.screenHeight, 50, 50, 1)
+		self.clock = pyg.time.Clock()
+		self.tickSpeed = 30
+		self.screen = pyg.display.set_mode((self.screenWidth, self.screenHeight))
+		#Surface we're drawing the blocks to, so we can blit that onto the main screen to move it
+		self.blockSurface = pyg.Surface((self.tileWidth * self.randomlyGeneratedStageLength, self.screenHeight))
+		self.blockSurfaceBlitted = False
+		self.counter = 0
+
+
+		self.player1 = char.Character(self.red, self.screen, self.screenWidth, self.screenHeight, 50, 25, 1)
 
 	def run_game(self):
 		#Put all logic inside this loop, above pyg.display.flip()
 	#	pyg.key.set_repeat(1, 25)
 	#	pyg.key.set_repeat()
 		while not self.done:
-			self.bgX -= 1
+			self.bgX -= self.scrollSpeed
+			self.bgX2 -= self.scrollSpeed
+			if self.bgX < self.blockSurface.get_width() * -1:
+				self.bgX = self.blockSurface.get_width()
+			if self.bgX2 < self.blockSurface.get_width() * -1:
+				self.bgX2 = self.blockSurface.get_width()
+
 			self.clock.tick(self.tickSpeed)
 			for event in pyg.event.get():
 				if event.type == pyg.QUIT:
@@ -80,16 +89,22 @@ class Game():
 
 	def drawStage(self, x, y):
 		#print("drawing stage:", self.randomlyGeneratedStageData)
-		if self.blockSurfaceBlit == False:
+		if self.blockSurfaceBlitted == False:
 			for row in range(len(self.randomlyGeneratedStageData)):
 				for col in range(len(self.randomlyGeneratedStageData[0])):
 					if self.randomlyGeneratedStageData[row][col] == 0:
 						pass
 						#print("miss")
 					elif self.randomlyGeneratedStageData[row][col] == 1 or self.randomlyGeneratedStageData[row][col] == 2:
+						
 						pyg.draw.rect(self.blockSurface, self.collidableBlockColor, pyg.Rect((col * self.tileWidth), (row * self.tileHeight), self.tileWidth, self.tileHeight))
+						self.bgX2 = self.blockSurface.get_width()
 						self.screen.blit(self.blockSurface, (x,y))
 
+			self.blockSurfaceBlitted = True
+		else:
+			self.screen.blit(self.blockSurface, (self.bgX, 0))
+			self.screen.blit(self.blockSurface, (self.bgX2, 0))
 					#print("hit")
 					#pyg.
 
@@ -106,7 +121,6 @@ class Game():
 						elif counter == 3:
 							#Randomly choose a vertical slice from the stage data to append onto the game stage. A certain value is added to the retrieved variable length, because when a value is generated that's above the retrieved variable length, it's changed to select the last value of the list. Thus, the odds of retrieving the last value of the list are increased.
 							vertSlice = random.randint(0, (len(self.stage.randomStageData[0]) - 1))
-						#	print("running tempRow.append(self.stage.returnStageData('individual', ", row, ", ", vertSlice, "))")
 							tempRow.append(self.stage.returnStageData("individual", row, vertSlice))
 							counter = 0
 
@@ -137,7 +151,11 @@ class Game():
 		self.debugColor = (255,0,239)
 		for vy in range(14):
 			for vx in range(24):
-				pyg.draw.rect(self.screen, self.debugColor, pyg.Rect((vx * self.tileWidth),(vy * self.tileHeight),(self.tileWidth),( self.tileHeight)),1 )      
+				pyg.draw.rect(self.screen, self.debugColor, pyg.Rect((vx * self.tileWidth),(vy * self.tileHeight),(self.tileWidth),( self.tileHeight)),1 )  
+
+	def goCrazy(self):
+		return (random.randrange(255), random.randrange(255),random.randrange(255))
+
 		
 #old stage data returning function - do not use:
 class stageData():
