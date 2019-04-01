@@ -32,6 +32,7 @@ class Character():
 		self.wWidth = width
 		self.playerWidth = playerWidth
 		self.playerHeight = playerHeight
+		self.score = 0 
 
 		self.movex = 0
 		self.movey = 0
@@ -39,7 +40,7 @@ class Character():
 		self.chaRect = pyg.Rect(self.x, self.y, self.playerWidth, self.playerHeight)
 		self.speed = 5
 		self.color = color
-		self.hp = 3
+		self.hp = 5
 		self.playerNum = playernum
 	def draw(self):
 		#self.chaRect = pyg.draw.rect(self.screen, self.color, self.char)

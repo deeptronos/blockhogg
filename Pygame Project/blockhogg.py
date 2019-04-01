@@ -26,7 +26,9 @@ class Game():
 		self.randomlyGeneratedStageLength = 240
 		self.randomlyGeneratedStageData = []
 		self.randomlyGeneratedStageDataExists = False
-	
+
+		self.hitcounter = 0
+		self.scorecounter = 100
 		self.scrollSpeed = 5
 		self.bgX = 0
 		self.bgX2 = 0
@@ -41,7 +43,7 @@ class Game():
 		self.blockSurface = pyg.Surface((self.tileWidth * self.randomlyGeneratedStageLength, self.screenHeight))
 		self.blockSurfaceBlitted = False
 		self.counter = 0
-
+		self.genericText = pyg.font.Font(None, 50)
 
 		self.player1 = char.Character(self.red, self.screen, self.screenWidth, self.screenHeight, 50, 25, 1)
 
@@ -49,36 +51,48 @@ class Game():
 		#Put all logic inside this loop, above pyg.display.flip()
 	#	pyg.key.set_repeat(1, 25)
 	#	pyg.key.set_repeat()
-		while not self.done:
-			self.scrollSpeed += 0.001
-			self.bgX -= self.scrollSpeed
-			self.bgX2 -= self.scrollSpeed 
-			if self.bgX < self.blockSurface.get_width() * -1:
-				self.bgX = self.blockSurface.get_width()
-			if self.bgX2 < self.blockSurface.get_width() * -1:
-				self.bgX2 = self.blockSurface.get_width()
-
-			self.clock.tick(self.tickSpeed)
-
-			for event in pyg.event.get():
-				if event.type == pyg.QUIT:
-					self.done = True
-			self.screen.fill((self.black))
-
-			if self.debugMode:
-				self.debug()
+		self.screen.fill((255,255,255))
+		self.titleRender = self.genericText.render("Press P to Play", 1, (0, 0, 0))
+		self.titleRenderPos = (self.screenWidth/2, self.screenHeight/2 )
+		pressed = pyg.key.get_pressed()
+		if pressed[pyg.K_p]:
+			while not self.done:
+				self.scrollSpeed += 0.001
+				self.bgX -= self.scrollSpeed
+				self.bgX2 -= self.scrollSpeed 
+				if self.bgX < self.blockSurface.get_width() * -1:
+					self.bgX = self.blockSurface.get_width()
+				if self.bgX2 < self.blockSurface.get_width() * -1:
+					self.bgX2 = self.blockSurface.get_width()
+				self.clock.tick(self.tickSpeed)
+				self.scorecounter -= 1
+				if self.scorecounter == 0:
+					self.player1.score += 1
+					self.scorecounter = 60
+				for event in pyg.event.get():
+					if event.type == pyg.QUIT:
+						self.done = True
+				self.screen.fill((self.black))
 				
-			if self.randomlyGeneratedStageDataExists == False:
-				self.generateStageData()
-			elif self.randomlyGeneratedStageDataExists == True:	
-
-				self.drawStage(self.bgX, 0)
-				self.player1.update()
-				self.player1.draw()
-				self.detectCollision()
-
-				pyg.display.update()
-		
+				if self.debugMode:
+					self.debug()
+					
+				if self.randomlyGeneratedStageDataExists == False:
+					self.generateStageData()
+					
+				elif self.randomlyGeneratedStageDataExists == True:	
+					self.drawStage(self.bgX, 0)
+					self.player1.update()
+					self.player1.draw()
+					self.detectCollision()
+					self.scoreRender = self.genericText.render("Player's score: " + str(self.player1.score), 1, (0, 0, 0))
+					self.scoreRenderPos = (10, 210 )
+					self.charHealthText = self.genericText.render("HP: " + ("-" * int(self.player1.hp)), 1, (0, 0, 0))
+					self.charHealthTextPos = (10, 10)			
+					self.screen.blit(self.scoreRender, self.scoreRenderPos)
+					self.screen.blit(self.charHealthText, self.charHealthTextPos)
+					pyg.display.update()
+			
 	#Old stage drawing method - outdated
 	def drawStageOld(self):
 		for row in range(len(self.stage.returnStageVar())):
@@ -162,45 +176,17 @@ class Game():
 
 	def detectCollision(self):
 		tL, tR, bL, bR = (int(self.player1.x) - 1, int(self.player1.y) -1),((int(self.player1.x) + int(self.player1.playerWidth)) +1, int(self.player1.y) -1),(int(self.player1.x) - 1, int(self.player1.playerHeight) + int(self.player1.y) + 1 ), ((int(self.player1.playerWidth) + int(self.player1.x)) + 1, (int(self.player1.playerHeight) + int(self.player1.y)) + 1)
-		
-		if self.screen.get_at(tL) != (0,0,0,255) or self.screen.get_at(tR) != (0,0,0,255) or self.screen.get_at(bL) != (0,0,0,255) or self.screen.get_at(bR) != (0,0,0,255):
-			print("hittt!!")
+		if self.hitcounter == 0:
+			if self.screen.get_at(tL) != (0,0,0,255) or self.screen.get_at(tR) != (0,0,0,255) or self.screen.get_at(bL) != (0,0,0,255) or self.screen.get_at(bR) != (0,0,0,255):
+				print("hittt!!")
+				self.player1.hp -= 1
+				self.hitcounter = 50
+		else: self.hitcounter -= 1
 
 
 	def goCrazy(self):
 		return (random.randrange(255), random.randrange(255),random.randrange(255))
 		#return(255,255,255)
-
-		
-#old stage data returning function - do not use:
-class stageData():
-	def __init__(self, selectedStage):
-		self.selectedStage = selectedStage
-
-		#initialize stageData with 1 as the selectedStage parameter to use this stage:
-		#dont use this anymore it's for the old version
-		self.stage1 =  [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-						[0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0],
-						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-						[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-						[0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-						[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]
-
-	def returnStageData(self, yPosInStageList, xPosInStageList):
-		if self.selectedStage == 1:
-			return self.stage1[yPosInStageList][xPosInStageList]
-
-	def returnStageVar(self):
-		if self.selectedStage == 1:
-			return self.stage1
 
 #new stage data returning method:
 class randomStageData():
