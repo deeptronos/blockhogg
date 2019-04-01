@@ -6,6 +6,7 @@ class Game():
 	def __init__(self):
 		#Set stuff up
 		pyg.init()
+		pyg.font.init()
 		pyg.display.set_caption("Chesz 2")
 		#pyg.display.toggle_fullscreen()
 		#Makes global width of tiles to use, in pixels
@@ -43,19 +44,32 @@ class Game():
 		self.blockSurface = pyg.Surface((self.tileWidth * self.randomlyGeneratedStageLength, self.screenHeight))
 		self.blockSurfaceBlitted = False
 		self.counter = 0
-		self.genericText = pyg.font.Font(None, 50)
+
+		self.genericText = pyg.font.SysFont("arial", 50)
 
 		self.player1 = char.Character(self.red, self.screen, self.screenWidth, self.screenHeight, 50, 25, 1)
+
+	def start_screen(self):
+		while not self.done:
+			for event in pyg.event.get():
+				if event.type == pyg.QUIT:
+					self.done = True
+
+			self.screen.fill((255,0,255))
+			titleRender = self.genericText.render("Press P to Play", False, (0, 0, 0))
+			titleRenderPos = (self.screenWidth/2, self.screenHeight/2 )
+			title_rect = titleRender.get_rect()
+			title_rect.midtop = (titleRenderPos)
+			self.screen.blit(titleRender, title_rect)
+			pyg.display.update()
+			pressed = pyg.key.get_pressed()
+			if pressed[pyg.K_p]:
+				self.run_game()
 
 	def run_game(self):
 		#Put all logic inside this loop, above pyg.display.flip()
 	#	pyg.key.set_repeat(1, 25)
 	#	pyg.key.set_repeat()
-		self.screen.fill((255,255,255))
-		self.titleRender = self.genericText.render("Press P to Play", 1, (0, 0, 0))
-		self.titleRenderPos = (self.screenWidth/2, self.screenHeight/2 )
-		pressed = pyg.key.get_pressed()
-		if pressed[pyg.K_p]:
 			while not self.done:
 				self.scrollSpeed += 0.001
 				self.bgX -= self.scrollSpeed
@@ -92,6 +106,7 @@ class Game():
 					self.screen.blit(self.scoreRender, self.scoreRenderPos)
 					self.screen.blit(self.charHealthText, self.charHealthTextPos)
 					pyg.display.update()
+
 			
 	#Old stage drawing method - outdated
 	def drawStageOld(self):
@@ -210,5 +225,5 @@ class randomStageData():
 			return columnData
 
 
-Game().run_game()
+Game().start_screen()
 #Game().drawStage()
