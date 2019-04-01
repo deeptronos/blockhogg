@@ -32,7 +32,7 @@ class Character():
 		self.wWidth = width
 		self.playerWidth = playerWidth
 		self.playerHeight = playerHeight
-		print("height:", height)
+
 		self.movex = 0
 		self.movey = 0
 		#making the character object

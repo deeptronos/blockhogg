@@ -10,10 +10,14 @@ class Game():
 		#Makes global width of tiles to use, in pixels
 		self.tileWidth, self.tileHeight = 50, 50
 		#Makes window size in relation to tile size
-		self.screenWidth, self.screenHeight = self.tileWidth * 24, self.tileHeight * 14
+		self.screenWidth, self.screenHeight = self.tileWidth * 24, self.tileHeight * 5
+
 		self.clock = pyg.time.Clock()
 		self.tickSpeed = 30
 		self.screen = pyg.display.set_mode((self.screenWidth, self.screenHeight))
+		#Surface we're drawing the blocks to, so we can blit that onto the main screen to move it
+		self.blockSurface = pyg.Surface((self.screenWidth, self.screenHeight))
+		self.blockSurfaceBlit = False
 		self.counter = 0
 		#Sets variable used to determine if user wants to quit
 		self.done = False
@@ -25,21 +29,24 @@ class Game():
 		self.stage = randomStageData()
 		self.collidableBlockColor = (255,255,255)
 
-		self.randomlyGeneratedStageLength = 16
+		self.randomlyGeneratedStageLength = 24
 		self.randomlyGeneratedStageData = []
 		self.randomlyGeneratedStageDataExists = False
-		#Change to player movement speed once that's done
+	
 		self.scrollSpeed = 10
+		self.bgX = 0
+
 		self.black = (0,0,0)
 		self.red = (255,0,0)
 
-		self.player1 = char.Character(self.red, self.screen, self.screenWidth, self.screenHeight,self.tileWidth, self.tileHeight, 1)
+		self.player1 = char.Character(self.red, self.screen, self.screenWidth, self.screenHeight, 50, 50, 1)
 
 	def run_game(self):
 		#Put all logic inside this loop, above pyg.display.flip()
 	#	pyg.key.set_repeat(1, 25)
 	#	pyg.key.set_repeat()
 		while not self.done:
+			self.bgX -= 1
 			self.clock.tick(self.tickSpeed)
 			for event in pyg.event.get():
 				if event.type == pyg.QUIT:
@@ -52,7 +59,7 @@ class Game():
 			if self.randomlyGeneratedStageDataExists == False:
 				self.generateStageData()
 			elif self.randomlyGeneratedStageDataExists == True:
-				self.drawStage()
+				self.drawStage(self.bgX, 0)
 				self.player1.update()
 				self.player1.draw()
 
@@ -71,16 +78,20 @@ class Game():
 					pyg.draw.rect(self.screen, self.collidableBlockColor, pyg.Rect((col * self.tileWidth), (row * self.tileHeight),self.tileWidth, self.tileHeight), )
 					#print("hit")
 
-	def drawStage(self):
+	def drawStage(self, x, y):
 		#print("drawing stage:", self.randomlyGeneratedStageData)
-		for row in range(len(self.randomlyGeneratedStageData)):
-			for col in range(len(self.randomlyGeneratedStageData[0])):
-				if self.randomlyGeneratedStageData[row][col] == 0:
-					pass
-					#print("miss")
-				elif self.randomlyGeneratedStageData[row][col] == 1 or self.randomlyGeneratedStageData[row][col] == 2:
-					pyg.draw.rect(self.screen, self.collidableBlockColor, pyg.Rect((col * self.tileWidth), (row * self.tileHeight), self.tileWidth, self.tileHeight))
+		if self.blockSurfaceBlit == False:
+			for row in range(len(self.randomlyGeneratedStageData)):
+				for col in range(len(self.randomlyGeneratedStageData[0])):
+					if self.randomlyGeneratedStageData[row][col] == 0:
+						pass
+						#print("miss")
+					elif self.randomlyGeneratedStageData[row][col] == 1 or self.randomlyGeneratedStageData[row][col] == 2:
+						pyg.draw.rect(self.blockSurface, self.collidableBlockColor, pyg.Rect((col * self.tileWidth), (row * self.tileHeight), self.tileWidth, self.tileHeight))
+						self.screen.blit(self.blockSurface, (x,y))
+
 					#print("hit")
+					#pyg.
 
 	def generateStageData(self):
 				#Randomly generates stage data to a size determined by the original stage data variable from the randomStageData class and by the randomlyGeneratedStageLength variable
