@@ -150,5 +150,6 @@ class Character():
 			if pressed[pyg.K_w]: self.y = self.y - self.speed
 		#	if pressed[pyg.K_a]: self.x = self.x - self.speed
 			if pressed[pyg.K_s]: self.y = self.y + self.speed
+			if pressed[pyg.K_q]: pyg.quit()
 		#	if pressed[pyg.K_d]: self.x = self.x + self.speed
 

@@ -6,7 +6,8 @@ class Game():
 	def __init__(self):
 		#Set stuff up
 		pyg.init()
-		pyg.display.set_caption("Blockhogg")
+		pyg.display.set_caption("Chesz 2")
+		#pyg.display.toggle_fullscreen()
 		#Makes global width of tiles to use, in pixels
 		self.tileWidth, self.tileHeight = 50, 50
 		#Makes window size in relation to tile size
@@ -35,7 +36,7 @@ class Game():
 
 		self.clock = pyg.time.Clock()
 		self.tickSpeed = 30
-		self.screen = pyg.display.set_mode((self.screenWidth, self.screenHeight))
+		self.screen = pyg.display.set_mode((self.screenWidth, self.screenHeight), (pyg.FULLSCREEN))
 		#Surface we're drawing the blocks to, so we can blit it onto the main screen to move it
 		self.blockSurface = pyg.Surface((self.tileWidth * self.randomlyGeneratedStageLength, self.screenHeight))
 		self.blockSurfaceBlitted = False
