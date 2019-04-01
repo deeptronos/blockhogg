@@ -61,6 +61,13 @@ class Game():
 			title_rect = titleRender.get_rect()
 			title_rect.midtop = (titleRenderPos)
 			self.screen.blit(titleRender, title_rect)
+
+			starttextRender = self.genericText.render("Chesz 2", False, (0, 0, 0))
+			starttextRenderPos = (self.screenWidth/2, self.screenHeight/2 )
+			starttext_rect = starttextRender.get_rect()
+			starttext_rect.midbottom = (starttextRenderPos)
+			self.screen.blit(starttextRender, starttext_rect)
+
 			pyg.display.update()
 			pressed = pyg.key.get_pressed()
 			if pressed[pyg.K_p]:
